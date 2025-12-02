@@ -5,7 +5,7 @@ import nl.rensen.aoc2025.common.Day;
 
 import java.util.List;
 
-public class Day01 implements Day<Integer> {
+public class Day01 implements Day<Integer, String> {
     int MAX_DIAL = 99;
     int MIN_DIAL = 0;
 
