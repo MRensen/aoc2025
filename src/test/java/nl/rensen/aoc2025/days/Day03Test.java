@@ -15,13 +15,13 @@ public class Day03Test {
 
     @Test
     public void part1() {
-        Day<Integer, String> day = new Day03();
-        assertEquals(Integer.valueOf(0), day.part1(input.getLines()));
+        Day<Long, String> day = new Day03();
+        assertEquals(Long.valueOf(17278), day.part1(input.getLines()));
     }
 
     @Test
     public void part2() {
-        Day<Integer, String> day = new Day03();
-        assertEquals(Integer.valueOf(0), day.part2(input.getLines()));
+        Day<Long, String> day = new Day03();
+        assertEquals(Long.valueOf(171528556468625L), day.part2(input.getLines()));
     }
 }
