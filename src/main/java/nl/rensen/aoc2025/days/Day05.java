@@ -16,7 +16,13 @@ public class Day05 implements Day<Integer, String> {
         }
     }
     public class RangeChecker{
-        List<Range> ranges = new ArrayList<>();
+        List<Range> ranges;
+        public RangeChecker() {
+            ranges = new ArrayList<>();
+        }
+        public RangeChecker(List<Range> ranges) {
+            this.ranges = ranges;
+        }
 
         public void add(long min, long max){
             ranges.add(new Range(min, max));
@@ -46,23 +52,61 @@ public class Day05 implements Day<Integer, String> {
             List<Range> uniqueRanges = new ArrayList<>();
             for (Range r : ranges){
                 boolean addCheck = false;
+                Set<Range> removeCheck = new HashSet<>();
                 if(uniqueRanges.isEmpty()){
                     uniqueRanges.add(r);
                 } else {
                     for(Range r2 : uniqueRanges){
-                        if(r.min>=r2.min && r.min<r2.max){
-                            r.min = r2.max;
+                        if(r.min<=r2.min && r.min<r2.max
+                                && r.max >= r2.max && r.max > r2.min){ //volledige overlap en meer  S1---s2---e2---E1
+//                            uniqueRanges.remove(r2);
+//                            uniqueRanges.add(r);
+                            addCheck = true;
+                            removeCheck.add(r2);
                         }
-                        if(r.max>=r2.min && r.max<r2.max){
-                            r.max = r2.min;
+                        if((r.min<=r2.min && r.min<r2.max)
+                                &&
+                                (r.max<=r2.max && r.max >= r2.min)){ // halve overlap aan de voorkant S1--s2--E1--e2
+//                            uniqueRanges.remove(r2);
+                            r.max = r2.max;
+//                            uniqueRanges.add(r);
+                            addCheck = true;
+                            removeCheck.add(r2);
                         }
-                        if(r.min > r.max){
-                            uniqueRanges.add(r);
+                        if(r.min >= r2.min && r.min <= r2.max
+                                &&
+                                r.max > r2.max && r.max > r2.min){ // halve overlap aan de achterkant s2--S1--e2--e1
+//                            uniqueRanges.remove(r2);
+                            r.min = r2.min;
+//                            uniqueRanges.add(r);
+                            addCheck = true;
+                            removeCheck.add(r2);
+                        }
+                        if(r.min >= r2.min && r.min <= r2.max
+                                &&
+                                r.max<=r2.max && r.max >= r2.min){ //volledige overlap inclusief s2--S1--E1--e2
+//                            Do nothing
+                            addCheck = false;
+                        }
+                        if((r.min<r2.min && r.max < r2.min) || (r.min > r2.max && r.max > r2.max)){ // Aansluitend, geen overlap S1---E1--s2---e2 || s2---e2---S1---E1
+                            addCheck = true;
                         }
                     }
+                    if(addCheck) {
+                        uniqueRanges.add(r);
+                    }
+                    if(!removeCheck.isEmpty())
+                        for(Range toRemove: removeCheck) {
+                            uniqueRanges.remove(toRemove);
+                        }
+                        removeCheck.clear();
                 }
             }
-            return uniqueRanges.size();
+            long counter = 0;
+            for (Range r : uniqueRanges){
+                counter+= r.max - r.min +1;
+            }
+            return counter;
         }
     }
 
@@ -99,6 +143,7 @@ public class Day05 implements Day<Integer, String> {
     public Integer part2(List<String> input) {
         part1(input);
         Long result =  checker.countUniqueRanges();
+        System.out.println(result);
         return null;
     }
 
